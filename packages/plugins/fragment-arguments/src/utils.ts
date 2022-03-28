@@ -1,6 +1,6 @@
-import { InlineFragmentNode, ArgumentNode, DocumentNode, FragmentDefinitionNode, visit, Kind } from 'graphql';
+import { InlineFragmentNode, ArgumentNode, DocumentNode, FragmentDefinitionNode, visit, Kind, GraphQLError } from 'graphql';
 
-export function applySelectionSetFragmentArguments(document: DocumentNode): DocumentNode | Error {
+export function applySelectionSetFragmentArguments(document: DocumentNode): DocumentNode | GraphQLError {
   const fragmentList = new Map<string, FragmentDefinitionNode>();
   for (const def of document.definitions) {
     if (def.kind !== 'FragmentDefinition') {

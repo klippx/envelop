@@ -145,7 +145,7 @@ export function createEnvelopOrchestrator<PluginsContext extends DefaultContext>
 
   const customParse: EnvelopContextFnWrapper<typeof parse, any> = beforeCallbacks.parse.length
     ? initialContext => (source, parseOptions) => {
-        let result: DocumentNode | Error | null = null;
+        let result: DocumentNode | GraphQLError | null = null;
         let parseFn: typeof parse = parse;
         const context = initialContext;
         const afterCalls: AfterParseHook<any>[] = [];
@@ -173,7 +173,7 @@ export function createEnvelopOrchestrator<PluginsContext extends DefaultContext>
           try {
             result = parseFn(source, parseOptions);
           } catch (e) {
-            result = e as Error;
+            result = e as GraphQLError;
           }
         }
 

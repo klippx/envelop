@@ -1,5 +1,5 @@
 import { assertSingleExecutionValue, createSpiedPlugin, createTestkit } from '@envelop/testing';
-import { FieldNode, parse, visit } from 'graphql';
+import { FieldNode, GraphQLError, parse, visit } from 'graphql';
 import { schema, query } from './common';
 
 describe('parse', () => {
@@ -44,6 +44,27 @@ describe('parse', () => {
     await teskit.execute(query);
     expect(replacementFn).toHaveBeenCalledTimes(1);
     expect(replacementFn).toHaveBeenCalledWith(query, undefined);
+  });
+
+  it('Should allow to identify errors correctly', async () => {
+    const errorFn = jest.fn((_error: GraphQLError) => {});
+    const teskit = createTestkit(
+      [
+        {
+          onParse: () => {
+            return ({ result }) => {
+              if (result instanceof GraphQLError) {
+                errorFn(result);
+              }
+            };
+          },
+        },
+      ],
+      schema
+    );
+    await teskit.execute('just a bad query...');
+    expect(errorFn).toHaveBeenCalledTimes(1);
+    expect(errorFn).toHaveBeenCalledWith(new GraphQLError('Syntax Error: Unexpected Name "just".'));
   });
 
   it('Should allow to set parsed document before actual parsing, and avoid running parseFn', async () => {

@@ -129,7 +129,7 @@ export type AfterParseEventPayload<ContextType> = {
   /**
    * Replace the parse result with a new result.
    */
-  replaceParseResult: (newResult: DocumentNode | Error) => void;
+  replaceParseResult: (newResult: DocumentNode | GraphQLError) => void;
 };
 
 /**
